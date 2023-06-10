@@ -33,6 +33,24 @@ func padding() {
 
 	fmt.Printf("Size of example = [%d]\n", unsafe.Sizeof(example{}))
 
+	// What will be size of this
+	type fun struct {
+		age       int16
+		isMale    bool
+		expenses  float32
+		isMarried bool
+		sal       float64
+	}
+
+	f := fun{}
+
+	fmt.Printf("Size of fun = [%d]\n", unsafe.Sizeof(f))
+	fmt.Printf("Value[%v]\tAddress[%p]\n", f.age, &f.age)
+	fmt.Printf("Value[%v]\tAddress[%p]\n", f.isMale, &f.isMale)
+	fmt.Printf("Value[%v]\tAddress[%p]\n", f.expenses, &f.expenses)
+	fmt.Printf("Value[%v]\tAddress[%p]\n", f.isMarried, &f.isMarried)
+	fmt.Printf("Value[%v]\tAddress[%p]\n", f.sal, &f.sal)
+
 	// What will be the size of this struct ?
 	type example2 struct {
 		flag    bool
