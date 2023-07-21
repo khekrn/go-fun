@@ -1,9 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"gg-modules/types"
+)
 
 func main() {
-	fmt.Println("The Number is : ", getNumbers())
+	user := types.User{Name: "John", Age: getNumbers()}
+	fmt.Println("The User is : ", user)
 }
 
 // Notes
@@ -14,3 +18,5 @@ func main() {
 // In order to fix this you can create the module using
 // `go mod init {name}` and `go build -o {name}` which will build
 // the entire go files
+
+// Note: All root directory files will have the package main
