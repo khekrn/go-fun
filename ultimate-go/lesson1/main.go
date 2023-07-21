@@ -21,18 +21,6 @@ func types() {
 }
 
 func padding() {
-	// A bool is 1 byte, int16 is 2 bytes, and float32 is 4 bytes.
-	// Add that all together and I get 7 bytes. However, the actual answer
-	// is 8 bytes. Why, because there is a padding byte sitting between
-	// the flag and counter fields for the reason of alignment.
-	type example struct {
-		flag    bool
-		counter int16
-		pi      float32
-	}
-
-	fmt.Printf("Size of example = [%d]\n", unsafe.Sizeof(example{}))
-
 	// What will be size of this
 	type fun struct {
 		age       int16
@@ -50,6 +38,18 @@ func padding() {
 	fmt.Printf("Value[%v]\tAddress[%p]\n", f.expenses, &f.expenses)
 	fmt.Printf("Value[%v]\tAddress[%p]\n", f.isMarried, &f.isMarried)
 	fmt.Printf("Value[%v]\tAddress[%p]\n", f.sal, &f.sal)
+
+	// A bool is 1 byte, int16 is 2 bytes, and float32 is 4 bytes.
+	// Add that all together and I get 7 bytes. However, the actual answer
+	// is 8 bytes. Why, because there is a padding byte sitting between
+	// the flag and counter fields for the reason of alignment.
+	type example struct {
+		flag    bool
+		counter int16
+		pi      float32
+	}
+
+	fmt.Printf("Size of example = [%d]\n", unsafe.Sizeof(example{}))
 
 	// What will be the size of this struct ?
 	type example2 struct {
@@ -114,7 +114,7 @@ func padding() {
 }
 
 func main() {
+	padding()
 	types()
 	fmt.Println("Padding")
-	padding()
 }
