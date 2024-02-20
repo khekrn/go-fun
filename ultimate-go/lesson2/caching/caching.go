@@ -1,7 +1,5 @@
 package caching
 
-import "fmt"
-
 // Create a square matrix of 16,777,216 bytes.
 const (
 	rows = 4 * 1024
@@ -49,8 +47,8 @@ func init() {
 			d = d.p
 		}
 
-		fmt.Println("Elements in the link list", ctr)
-		fmt.Println("Elements in the matrix", rows*cols)
+		//fmt.Println("Elements in the link list", ctr)
+		//fmt.Println("Elements in the matrix", rows*cols)
 	}
 }
 

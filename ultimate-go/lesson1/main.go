@@ -116,5 +116,23 @@ func padding() {
 func main() {
 	padding()
 	types()
-	fmt.Println("Padding")
+	fmt.Println("Padding\n")
+	homework()
+}
+
+func homework() {
+	type s1 struct {
+		flag   bool
+		age    int32
+		salary float64
+		gender int16
+	}
+
+	f := &s1{false, 12, 32423476436783467853476.546, 1}
+
+	fmt.Printf("Value[%v]\tAddress[%p]\n", f.flag, &f.flag)
+	fmt.Printf("Value[%v]\tAddress[%p]\n", f.age, &f.age)
+	fmt.Printf("Value[%v]\tAddress[%p]\n", f.salary, &f.salary)
+	fmt.Printf("Value[%v]\tAddress[%p]\n", f.gender, &f.gender)
+	fmt.Printf("Size of S1 = [%d]\n", unsafe.Sizeof(f))
 }
