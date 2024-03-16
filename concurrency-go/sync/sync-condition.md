@@ -13,6 +13,16 @@ to wait for a certain condition to become true before they proceed.
 
 *   **Signaling**: A goroutine can signal a change in condition, which wakes up one waiting goroutine, or it can broadcast a change, waking up all waiting goroutines.
 
+The `sync.Cond` type has three main methods:
+
+1. `Wait()`: This method is called by a goroutine to wait for the condition to be true. It suspends the execution of the goroutine until the condition is signaled or broadcasted. The goroutine must hold the associated lock before calling `Wait()`.
+
+2. `Signal()`: This method is used to signal one goroutine that is waiting on the condition. It wakes up one goroutine that is blocked on the `Wait()` method. The goroutine that calls `Signal()` must hold the associated lock.
+
+3. `Broadcast()`: This method is used to signal all goroutines that are waiting on the condition. It wakes up all goroutines that are blocked on the `Wait()` method. The goroutine that calls `Broadcast()` must hold the associated lock.
+
+
+
 ### Basic Structure
 
 ```go
@@ -151,5 +161,77 @@ func main() {
 
 ```
 
+### Broadcast use case - Event System
+Certainly! Let's consider a scenario where multiple goroutines are waiting for a specific event to occur, and once the event happens, all the waiting goroutines need to be notified simultaneously. This is where `Broadcast()` comes in handy.
+
+Here's an example that demonstrates the use case of `Broadcast()`:
+
+```go
+package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+var (
+    mu     sync.Mutex
+    cond   = sync.NewCond(&mu)
+    events = make(map[string]bool)
+)
+
+func waiter(name string, event string) {
+    mu.Lock()
+    for !events[event] {
+        cond.Wait()
+    }
+    fmt.Printf("%s: Event '%s' occurred\n", name, event)
+    mu.Unlock()
+}
+
+func signalEvent(event string) {
+    time.Sleep(2 * time.Second)
+    mu.Lock()
+    events[event] = true
+    cond.Broadcast()
+    mu.Unlock()
+}
+
+func main() {
+    go waiter("Goroutine 1", "EventA")
+    go waiter("Goroutine 2", "EventA")
+    go waiter("Goroutine 3", "EventB")
+    go waiter("Goroutine 4", "EventB")
+
+    go signalEvent("EventA")
+    go signalEvent("EventB")
+
+    time.Sleep(5 * time.Second)
+}
+```
+
+In this example, we have multiple goroutines waiting for specific events (`EventA` and `EventB`) to occur. The `events` map keeps track of whether each event has occurred or not.
+
+The `waiter` function represents a goroutine that waits for a specific event. It takes the name of the goroutine and the event it is waiting for as parameters. Inside the function, the goroutine acquires the lock using `mu.Lock()` and then enters a loop where it checks if the event has occurred. If the event hasn't occurred yet, the goroutine waits on the condition variable using `cond.Wait()`. Once the event occurs and the condition is broadcasted, all the waiting goroutines are woken up, and they proceed to print a message indicating that the event has occurred.
+
+The `signalEvent` function simulates the occurrence of an event. It takes the event name as a parameter. After a delay of 2 seconds (to simulate some processing time), it acquires the lock, sets the corresponding event in the `events` map to `true`, and then calls `cond.Broadcast()` to notify all the waiting goroutines that the event has occurred.
+
+In the `main` function, we create four goroutines: two waiting for `EventA` and two waiting for `EventB`. We also start two goroutines that signal the occurrence of `EventA` and `EventB` respectively.
+
+When we run this program, the output will be similar to:
+
+```
+Goroutine 1: Event 'EventA' occurred
+Goroutine 2: Event 'EventA' occurred
+Goroutine 3: Event 'EventB' occurred
+Goroutine 4: Event 'EventB' occurred
+```
+
+All the goroutines waiting for `EventA` are notified and proceed simultaneously when `EventA` is signaled using `Broadcast()`. Similarly, all the goroutines waiting for `EventB` are notified and proceed simultaneously when `EventB` is signaled.
+
+This example demonstrates how `Broadcast()` is useful when multiple goroutines are waiting for the same event, and you want to notify all of them at once when the event occurs.
+
 ### Summary
 `sync.Cond` is a powerful primitive for managing synchronized access to shared state based on specific conditions. It's particularly useful in producer-consumer scenarios, implementing barriers, and whenever you need fine-grained control over goroutine scheduling based on state changes. However, it requires careful handling of locking and condition checking to avoid deadlocks or missed signals.
+
