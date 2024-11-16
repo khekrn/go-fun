@@ -18,13 +18,14 @@ type DatabaseConfig struct {
 	User     string
 	Password string
 	Name     string
+	Schema   string
 	SSLMode  string
 	Timezone string
 }
 
 func (d *DatabaseConfig) ConnectionURL() string {
-	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
-		d.Host, d.User, d.Password, d.Name, d.Port, d.SSLMode, d.Timezone)
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s search_path=%s port=%s sslmode=%s TimeZone=%s",
+		d.Host, d.User, d.Password, d.Name, d.Schema, d.Port, d.SSLMode, d.Timezone)
 }
 
 type ServerConfig struct {
@@ -55,6 +56,7 @@ func Load(fileName string) (*Config, error) {
 		User:     dbSection.Key("user").MustString("postgres"),
 		Password: dbSection.Key("password").MustString(""),
 		Name:     dbSection.Key("name").MustString("proddb"),
+		Schema:   dbSection.Key("schema").MustString("public"),
 		SSLMode:  dbSection.Key("sslmode").MustString("disable"),
 		Timezone: dbSection.Key("timezone").MustString("UTC"),
 	}
