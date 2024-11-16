@@ -28,8 +28,9 @@ func (d *DatabaseConfig) ConnectionURL() string {
 }
 
 type ServerConfig struct {
-	Port string
-	Mode string
+	Port     string
+	Mode     string
+	LogLevel string
 }
 
 func Load(fileName string) (*Config, error) {
@@ -42,8 +43,9 @@ func Load(fileName string) (*Config, error) {
 
 	serverSection := cfg.Section("server")
 	config.Server = ServerConfig{
-		Port: serverSection.Key("port").MustString("8080"),
-		Mode: serverSection.Key("mode").MustString("debug"),
+		Port:     serverSection.Key("port").MustString("8080"),
+		Mode:     serverSection.Key("mode").MustString("debug"),
+		LogLevel: serverSection.Key("logLevel").MustString("info"),
 	}
 
 	dbSection := cfg.Section("database")
