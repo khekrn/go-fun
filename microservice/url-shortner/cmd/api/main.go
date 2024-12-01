@@ -14,7 +14,7 @@ func main() {
 		panic("Failed to load config " + err.Error())
 	}
 
-	log.InitLogger(cfg)
+	log.InitLogger(cfg.Server.LogLevel, cfg.Server.Mode)
 	defer log.Sync()
 
 	dbService, err := database.NewService(&cfg.Database)
