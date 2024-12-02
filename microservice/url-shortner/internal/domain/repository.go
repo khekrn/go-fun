@@ -1,15 +1,17 @@
 package domain
 
+import "context"
+
 type AccountRepository interface {
-	Create(account *Account) error
-	Activate(id uint) error
-	CreateAPIKey(accountId uint, name string) (string, error)
-	DeactivateAPIKey(accountId uint, apiKey string) error
+	Create(ctx context.Context, account *Account) error
+	Activate(ctx context.Context, id uint) error
+	CreateAPIKey(ctx context.Context, accountId uint, name string) (string, error)
+	DeactivateAPIKey(ctx context.Context, accountId uint, apiKey string) error
 }
 
 type ShortURLRepository interface {
-	CreateURL(accountId, apiKeyId uint, sourceURL string, customSlug string) (*ShortUrl, error)
-	GetSourceURL(code string) (*ShortUrl, error)
-	IncrementClicks(id uint) error
-	DeactivateURL(accountId uint, code string) error
+	CreateURL(ctx context.Context, accountId, apiKeyId uint, sourceURL, shortCode string) (*ShortUrl, error)
+	GetSourceURL(ctx context.Context, code string) (*ShortUrl, error)
+	IncrementClicks(ctx context.Context, id uint) error
+	DeactivateURL(ctx context.Context, accountId uint, code string) error
 }
