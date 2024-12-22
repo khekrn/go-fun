@@ -1,7 +1,6 @@
 package log
 
 import (
-	"coding2fun.in/url-shortner/internal/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -9,9 +8,9 @@ import (
 var Logger *zap.Logger
 
 // InitLogger initializes the logger based on the config
-func InitLogger(config *config.Config) {
+func InitLogger(logLevel, mode string) {
 	var lvl zapcore.Level
-	if err := lvl.UnmarshalText([]byte(config.Server.LogLevel)); err != nil {
+	if err := lvl.UnmarshalText([]byte(logLevel)); err != nil {
 		panic("Failed to initialize logger = " + err.Error())
 	}
 
@@ -19,7 +18,7 @@ func InitLogger(config *config.Config) {
 		Level:             zap.NewAtomicLevelAt(lvl),
 		Development:       false,
 		DisableCaller:     false,
-		DisableStacktrace: config.Server.Mode == "release",
+		DisableStacktrace: mode == "release",
 		Encoding:          "console",
 		EncoderConfig: zapcore.EncoderConfig{
 			TimeKey:          "timestamp",
